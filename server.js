@@ -45,7 +45,10 @@ function createTables() {
         password TEXT,
         rol TEXT
     )`);
-    db.run(`INSERT OR IGNORE INTO usuarios (username, password, rol) VALUES ('Administrador', 'admin123', 'admin')`);
+    const adminExists = db.exec("SELECT id FROM usuarios WHERE username = 'Administrador'");
+    if (!adminExists.length || !adminExists[0].values.length) {
+        db.run(`INSERT INTO usuarios (username, password, rol) VALUES ('Administrador', 'admin123', 'admin')`);
+    }
     
     db.run(`CREATE TABLE IF NOT EXISTS lockers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
