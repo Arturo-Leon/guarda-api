@@ -2623,7 +2623,7 @@
             };
 
             try {
-                const response = await fetch(`https://guarda-api-production.up.railway.app/api${endpoint}`, {
+                const response = await fetch(`https://guarda-api-h9az.onrender.com/api${endpoint}`, {
                     ...options,
                     headers: { ...headers, ...options.headers }
                 });
@@ -2743,7 +2743,7 @@
             try {
                 const token = localStorage.getItem('api_token');
                 if (token) {
-                    const response = await fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', {
+                    const response = await fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     const data = await response.json();
@@ -2785,7 +2785,7 @@
                 return;
             }
             try {
-                const response = await fetch('https://guarda-api-production.up.railway.app/api/configuracion/precios', {
+                const response = await fetch('https://guarda-api-h9az.onrender.com/api/configuracion/precios', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
@@ -2913,7 +2913,7 @@
             }
 
             try {
-                const response = await fetch('https://guarda-api-production.up.railway.app/api/login', {
+                const response = await fetch('https://guarda-api-h9az.onrender.com/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -3589,7 +3589,7 @@
             }
 
             if (movimientoPendiente) {
-                fetch(`https://guarda-api-production.up.railway.app/api/movimientos/${movimientoPendiente.id}`, {
+                fetch(`https://guarda-api-h9az.onrender.com/api/movimientos/${movimientoPendiente.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -4022,7 +4022,7 @@
             };
 
             // Guardar turno en SQLite
-            fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', {
+            fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4359,7 +4359,7 @@
             turnoActual = 1;
 
             localStorage.setItem('turnoActual', 1);
-            fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', {
+            fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -4482,7 +4482,7 @@
             
             try {
                 const token = localStorage.getItem('api_token');
-                await fetch('https://guarda-api-production.up.railway.app/api/configuracion/precios', {
+                await fetch('https://guarda-api-h9az.onrender.com/api/configuracion/precios', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ configPrecios: configPreciosActualizada, tarifasHoras, configPreciosExtra: configPreciosExtraActualizada })
@@ -4652,7 +4652,7 @@
             };
 
             // Guardar en SQLite (establecimiento + apariencia + logo)
-            fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', {
+            fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -5518,7 +5518,7 @@
 
             try {
                 const token = localStorage.getItem('api_token');
-                const response = await fetch('https://guarda-api-production.up.railway.app/api/usuarios', {
+                const response = await fetch('https://guarda-api-h9az.onrender.com/api/usuarios', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(usuarioData)
@@ -5538,7 +5538,7 @@
         async function cargarUsuariosDesdeAPI() {
             try {
                 const token = localStorage.getItem('api_token');
-                const response = await fetch('https://guarda-api-production.up.railway.app/api/usuarios', { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch('https://guarda-api-h9az.onrender.com/api/usuarios', { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
                 if (data.success) {
                     usuarios = data.usuarios;
@@ -5560,7 +5560,7 @@
             if (confirm(`¿Eliminar usuario "${usuario.nombre}"?`)) {
                 try {
                     const token = localStorage.getItem('api_token');
-                    await fetch(`https://guarda-api-production.up.railway.app/api/usuarios/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                    await fetch(`https://guarda-api-h9az.onrender.com/api/usuarios/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
                     mostrarToast('success', 'Usuario eliminado', `${usuario.nombre} eliminado`);
                     await cargarUsuariosDesdeAPI();
                     renderConfiguracionSistema();
@@ -5738,40 +5738,40 @@
                         mostrarToast('info', 'Restaurando...', 'Guardando en SQLite');
 
                         // Limpiar SQLite primero
-                        await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/clientes', { method: 'DELETE', headers }).catch(() => { });
-                        await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/lockers', { method: 'DELETE', headers }).catch(() => { });
-                        await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/registros', { method: 'DELETE', headers }).catch(() => { });
-                        await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/movimientos', { method: 'DELETE', headers }).catch(() => { });
-                        await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/historial', { method: 'DELETE', headers }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/clientes', { method: 'DELETE', headers }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/lockers', { method: 'DELETE', headers }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/registros', { method: 'DELETE', headers }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/movimientos', { method: 'DELETE', headers }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/historial', { method: 'DELETE', headers }).catch(() => { });
 
                         // Restaurar lockers
                         for (const l of lockers) {
-                            await fetch('https://guarda-api-production.up.railway.app/api/lockers', { method: 'POST', headers, body: JSON.stringify(l) }).catch(() => { });
+                            await fetch('https://guarda-api-h9az.onrender.com/api/lockers', { method: 'POST', headers, body: JSON.stringify(l) }).catch(() => { });
                         }
 
                         // Restaurar clientes
                         for (const c of clientes) {
-                            await fetch('https://guarda-api-production.up.railway.app/api/clientes', { method: 'POST', headers, body: JSON.stringify(c) }).catch(() => { });
+                            await fetch('https://guarda-api-h9az.onrender.com/api/clientes', { method: 'POST', headers, body: JSON.stringify(c) }).catch(() => { });
                         }
 
                         // Restaurar registros
                         for (const r of registros) {
-                            await fetch('https://guarda-api-production.up.railway.app/api/registros', { method: 'POST', headers, body: JSON.stringify(r) }).catch(() => { });
+                            await fetch('https://guarda-api-h9az.onrender.com/api/registros', { method: 'POST', headers, body: JSON.stringify(r) }).catch(() => { });
                         }
 
                         // Restaurar movimientos
                         for (const m of movimientosCaja) {
-                            await fetch('https://guarda-api-production.up.railway.app/api/movimientos', { method: 'POST', headers, body: JSON.stringify(m) }).catch(() => { });
+                            await fetch('https://guarda-api-h9az.onrender.com/api/movimientos', { method: 'POST', headers, body: JSON.stringify(m) }).catch(() => { });
                         }
 
                         // Restaurar historial de cierres
                         for (const h of historialCajas) {
-                            await fetch('https://guarda-api-production.up.railway.app/api/cierre', { method: 'POST', headers, body: JSON.stringify(h) }).catch(() => { });
+                            await fetch('https://guarda-api-h9az.onrender.com/api/cierre', { method: 'POST', headers, body: JSON.stringify(h) }).catch(() => { });
                         }
 
                         // Restaurar configuración
-                        await fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', { method: 'POST', headers, body: JSON.stringify({ configSistema }) }).catch(() => { });
-                        await fetch('https://guarda-api-production.up.railway.app/api/configuracion/precios', { method: 'POST', headers, body: JSON.stringify({ configPrecios, tarifasHoras: {}, configPreciosExtra }) }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', { method: 'POST', headers, body: JSON.stringify({ configSistema }) }).catch(() => { });
+                        await fetch('https://guarda-api-h9az.onrender.com/api/configuracion/precios', { method: 'POST', headers, body: JSON.stringify({ configPrecios, tarifasHoras: {}, configPreciosExtra }) }).catch(() => { });
 
                         mostrarToast('success', '✅ Datos restaurados', 'SQLite actualizado. Recargando...');
                         setTimeout(() => location.reload(), 1500);
@@ -5846,20 +5846,20 @@
             const headers = { 'Authorization': `Bearer ${token}` };
 
             // Eliminar TODO de SQLite (usando el endpoint correcto)
-            await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/clientes', { method: 'DELETE', headers }).catch(() => { });
-            await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/lockers', { method: 'DELETE', headers }).catch(() => { });
-            await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/registros', { method: 'DELETE', headers }).catch(() => { });
-            await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/movimientos', { method: 'DELETE', headers }).catch(() => { });
-            await fetch('https://guarda-api-production.up.railway.app/api/admin/clear/historial', { method: 'DELETE', headers }).catch(() => { });
+            await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/clientes', { method: 'DELETE', headers }).catch(() => { });
+            await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/lockers', { method: 'DELETE', headers }).catch(() => { });
+            await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/registros', { method: 'DELETE', headers }).catch(() => { });
+            await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/movimientos', { method: 'DELETE', headers }).catch(() => { });
+            await fetch('https://guarda-api-h9az.onrender.com/api/admin/clear/historial', { method: 'DELETE', headers }).catch(() => { });
 
             // Eliminar usuarios excepto Administrador
             try {
-                const resp = await fetch('https://guarda-api-production.up.railway.app/api/usuarios', { headers });
+                const resp = await fetch('https://guarda-api-h9az.onrender.com/api/usuarios', { headers });
                 const data = await resp.json();
                 if (data.usuarios) {
                     for (const u of data.usuarios) {
                         if (u.username !== 'Administrador') {
-                            await fetch(`https://guarda-api-production.up.railway.app/api/usuarios/${u.id}`, { method: 'DELETE', headers }).catch(() => { });
+                            await fetch(`https://guarda-api-h9az.onrender.com/api/usuarios/${u.id}`, { method: 'DELETE', headers }).catch(() => { });
                         }
                     }
                 }
@@ -5882,7 +5882,7 @@
             localStorage.setItem('turnoActual', 1);
 
             // Limpiar turno en SQLite
-            fetch('https://guarda-api-production.up.railway.app/api/configuracion/sistema', {
+            fetch('https://guarda-api-h9az.onrender.com/api/configuracion/sistema', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
