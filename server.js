@@ -182,7 +182,7 @@ app.post('/api/configuracion/precios', verifyToken, async (req, res) => {
 });
 
 app.get('/api/configuracion/precios', verifyToken, async (req, res) => {
-    const result = await db.execute('SELECT clave, valor FROM configuracion WHERE clave IN (\'configPrecios\', \'tarifasHoras\', \'configPreciosExtra\')');
+    const result = await db.execute(`SELECT clave, valor FROM configuracion WHERE clave IN ('configPrecios', 'tarifasHoras', 'configPreciosExtra')`);
     const configuracion = {};
     result.rows.forEach(r => { try { configuracion[r[0]] = JSON.parse(r[1]); } catch(e) {} });
     res.json({ success: true, configuracion });
