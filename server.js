@@ -172,9 +172,12 @@ app.post('/api/cierre', verifyToken, async (req, res) => {
 // ============ CONFIGURACIÓN ============
 app.post('/api/configuracion/precios', verifyToken, async (req, res) => {
     const { configPrecios, tarifasHoras, configPreciosExtra } = req.body;
-    await db.execute('INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)', ['configPrecios', JSON.stringify(configPrecios)]);
-    await db.execute('INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)', ['tarifasHoras', JSON.stringify(tarifasHoras)]);
-    await db.execute('INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)', ['configPreciosExtra', JSON.stringify(configPreciosExtra || {})]);
+    await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configPrecios']);
+    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configPrecios', JSON.stringify(configPrecios)]);
+    await db.execute('DELETE FROM configuracion WHERE clave = ?', ['tarifasHoras']);
+    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['tarifasHoras', JSON.stringify(tarifasHoras)]);
+    await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configPreciosExtra']);
+    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configPreciosExtra', JSON.stringify(configPreciosExtra || {})]);
     res.json({ success: true });
 });
 
@@ -187,7 +190,8 @@ app.get('/api/configuracion/precios', verifyToken, async (req, res) => {
 
 app.post('/api/configuracion/sistema', verifyToken, async (req, res) => {
     const { configSistema } = req.body;
-    await db.execute('INSERT OR REPLACE INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(configSistema)]);
+    await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configSistema']);
+    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(configSistema)]);
     res.json({ success: true });
 });
 
