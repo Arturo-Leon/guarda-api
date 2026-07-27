@@ -88,6 +88,21 @@ app.delete('/api/clientes/:id', verifyToken, async (req, res) => {
     res.json({ success: true });
 });
 
+// Crear tablas automáticamente
+async function createTables() {
+    await db.execute(`CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT, rol TEXT)`);
+    await db.execute(`INSERT OR IGNORE INTO usuarios (id, username, password, rol) VALUES (1, 'Administrador', 'admin123', 'administrador')`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS lockers (id INTEGER PRIMARY KEY AUTOINCREMENT, codigo TEXT UNIQUE, tamanio TEXT, estado TEXT DEFAULT 'disponible')`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, identificacion TEXT UNIQUE, telefono TEXT, email TEXT, direccion TEXT, registros INTEGER DEFAULT 0, total_gastado REAL DEFAULT 0)`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS sucursales (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, direccion TEXT, telefono TEXT, email TEXT, activo INTEGER DEFAULT 1, fecha_creacion TEXT)`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS configuracion (id INTEGER PRIMARY KEY AUTOINCREMENT, clave TEXT UNIQUE, valor TEXT)`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS registros (id INTEGER PRIMARY KEY AUTOINCREMENT, numero_registro TEXT, codigo_equipaje TEXT, locker_id INTEGER, locker_codigo TEXT, tamanio_locker TEXT, cliente_nombre TEXT, cliente_identificacion TEXT, cliente_telefono TEXT, descripcion_equipaje TEXT, fecha TEXT, hora TEXT, monto REAL, estado TEXT DEFAULT 'activo', metodo_pago TEXT, fecha_retiro TEXT, hora_retiro TEXT)`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS movimientos_caja (id INTEGER PRIMARY KEY AUTOINCREMENT, tipo TEXT, concepto TEXT, monto REAL, metodo TEXT, fecha TEXT, hora TEXT, registro TEXT, descripcion TEXT, observaciones TEXT)`);
+    await db.execute(`CREATE TABLE IF NOT EXISTS historial_cierres (id INTEGER PRIMARY KEY AUTOINCREMENT, turno INTEGER, fechaApertura TEXT, horaApertura TEXT, fechaCierre TEXT, horaCierre TEXT, montoInicial REAL, ingresos REAL, egresos REAL, pendientes REAL, totalEsperado REAL, arqueoEfectivo REAL, diferencia REAL, estado TEXT, observaciones TEXT, descripcion TEXT)`);
+    console.log('✅ Tablas listas');
+}
+createTables();
+
 // ============ REGISTROS ============
 app.get('/api/registros', verifyToken, async (req, res) => {
     const result = await db.execute('SELECT * FROM registros ORDER BY id DESC');
