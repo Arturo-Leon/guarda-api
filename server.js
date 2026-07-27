@@ -3,7 +3,6 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const { createClient } = require('@libsql/client');
-
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
