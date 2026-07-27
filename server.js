@@ -45,7 +45,15 @@ function createTables() {
         password TEXT,
         rol TEXT
     )`);
-    db.run(`INSERT OR IGNORE INTO usuarios (username, password, rol) VALUES ('Administrador', 'admin123', 'admin')`);
+    
+    // Verificar si el admin existe
+    const result = db.exec("SELECT id FROM usuarios WHERE username = 'Administrador'");
+    if (result.length === 0 || result[0].values.length === 0) {
+        db.run(`INSERT INTO usuarios (id, username, password, rol) VALUES (1, 'Administrador', 'admin123', 'admin')`);
+        console.log('✅ Administrador creado');
+    } else {
+        console.log('✅ Administrador ya existe');
+    }
     
     db.run(`CREATE TABLE IF NOT EXISTS lockers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -425,4 +433,9 @@ openDb().then(() => {
     app.listen(PORT, () => {
         console.log('🚀 API SQLite corriendo en puerto ' + PORT);
     });
+});
+
+app.use(express.static(path.join(__dirname, 'frontend')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
