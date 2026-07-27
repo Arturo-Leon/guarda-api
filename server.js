@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+//<<<<<<< HEAD
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -440,7 +440,7 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
-=======
+//=======
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -882,4 +882,4 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
->>>>>>> 53f32b415ce48205e9d2b438d2d43bc39ab62f26
+//>>>>>>> 53f32b415ce48205e9d2b438d2d43bc39ab62f26
