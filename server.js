@@ -12,7 +12,7 @@ const db = createClient({
     authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODUxMjc5MjcsImlkIjoiMDE5ZmExZWEtMDYwMS03ZjZjLWE2MmUtN2NlMTc4NGYwOWE2Iiwia2lkIjoiWnNsb29MdW83aDlNeXRhQW9JWllCSWZYcHBnT3Y2UDBuSnJ2S0RkZWNhSSIsInJpZCI6ImRiOGQzOGViLTBkNWEtNDk1Yy1iMDc3LTc2ZjQ0OGFkMWU1MSJ9.tAor3yssKGSRQ5j7szhWcK2mheoj6dmzj8jhnqvcHu96cYPSDdiYhkkFi_VDzjnajFqqPLCGdghemYGFBUVOCA'
 });
 
-// ============ VERIFICAR TOKEN ============
+// ======= VERIFICAR TOKEN =======
 function verifyToken(req, res, next) {
     const auth = req.headers.authorization;
     if (!auth) return res.status(401).json({ error: 'No token' });
