@@ -245,7 +245,7 @@ app.post('/api/usuarios', verifyToken, async (req, res) => {
         else await db.execute('UPDATE usuarios SET nombre=?, username=?, rol=?, activo=? WHERE id=?', [nombre, username, rol, activo, id]);
         res.json({ success: true });
     } else {
-        const result = await db.execute('INSERT INTO usuarios (nombre, username, password, rol, activo, fecha_creacion) VALUES (?,?,?,?,?,datetime("now"))', [nombre, username, password || 'admin123', rol || 'operador', activo || 1]);
+        const result = await db.execute('INSERT INTO usuarios (nombre, username, password, rol, activo, fecha_creacion) VALUES (?,?,?,?,?,?)', [nombre, username, password || 'admin123', rol || 'operador', activo || 1, new Date().toLocaleDateString()]);
         const idResult = await db.execute('SELECT last_insert_rowid() as id');
         res.json({ success: true, id: idResult.rows[0].id });
     }
