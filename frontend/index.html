@@ -3811,6 +3811,8 @@
                 if (result.success) {
                     data.id = result.id;
                     clientes.push(data);
+                    mostrarToast('success', 'Cliente creado', `${data.nombre} creado`);
+                } else {
                     mostrarToast('error', 'Error', 'No se pudo crear el cliente');
                     return;
                 }
