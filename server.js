@@ -12,7 +12,7 @@ const db = createClient({
     authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODUxMjc5MjcsImlkIjoiMDE5ZmExZWEtMDYwMS03ZjZjLWE2MmUtN2NlMTc4NGYwOWE2Iiwia2lkIjoiWnNsb29MdW83aDlNeXRhQW9JWllCSWZYcHBnT3Y2UDBuSnJ2S0RkZWNhSSIsInJpZCI6ImRiOGQzOGViLTBkNWEtNDk1Yy1iMDc3LTc2ZjQ0OGFkMWU1MSJ9.tAor3yssKGSRQ5j7szhWcK2mheoj6dmzj8jhnqvcHu96cYPSDdiYhkkFi_VDzjnajFqqPLCGdghemYGFBUVOCA'
 });
 
-// ======= VERIFICAR TOKEN =======
+// ============ VERIFICAR TOKEN ============
 function verifyToken(req, res, next) {
     const auth = req.headers.authorization;
     if (!auth) return res.status(401).json({ error: 'No token' });
@@ -74,11 +74,11 @@ app.post('/api/clientes', verifyToken, async (req, res) => {
     const { id, nombre, identificacion, telefono, email, direccion, registros, total_gastado } = req.body;
     if (id) {
         await db.execute('UPDATE clientes SET nombre=?, identificacion=?, telefono=?, email=?, direccion=?, registros=?, total_gastado=? WHERE id=?',
-            [nombre, identificacion, telefono || null, email || null, direccion || null, registros || 0, total_gastado || 0, id]);
+            [nombre, identificacion, telefono || '', email || '', direccion || '', registros || 0, total_gastado || 0, id]);
         res.json({ success: true, id: parseInt(id) });
     } else {
         const result = await db.execute('INSERT INTO clientes (nombre, identificacion, telefono, email, direccion, registros, total_gastado) VALUES (?,?,?,?,?,?,?)',
-        [nombre, identificacion, telefono || null, email || null, direccion || null, registros || 0, total_gastado || 0]);
+        [nombre, identificacion, telefono || '', email || '', direccion || '', registros || 0, total_gastado || 0]);
         console.log('📝 INSERT clientes:', nombre, identificacion);
         const idResult = await db.execute('SELECT last_insert_rowid() as id');
         console.log('🆔 Nuevo ID:', idResult.rows[0]?.id);
@@ -149,7 +149,7 @@ app.get('/api/movimientos', verifyToken, async (req, res) => {
 app.post('/api/movimientos', verifyToken, async (req, res) => {
     const { tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones } = req.body;
     const result = await db.execute('INSERT INTO movimientos_caja (tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones) VALUES (?,?,?,?,?,?,?,?,?)',
-        [tipo, concepto, monto, metodo, fecha, hora, registro, descripcion || null, observaciones || null]);
+        [tipo, concepto, monto, metodo, fecha, hora, registro, descripcion || '', observaciones || '']);
     const idResult = await db.execute('SELECT last_insert_rowid() as id');
     res.json({ success: true, id: idResult.rows[0].id });
 });
@@ -170,7 +170,7 @@ app.get('/api/historial/cierres', verifyToken, async (req, res) => {
 app.post('/api/cierre', verifyToken, async (req, res) => {
     const { turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion } = req.body;
     const result = await db.execute(`INSERT INTO historial_cierres (turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones || null, descripcion || null]);
+        [turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones || '', descripcion || '']);
     res.json({ success: true, id: result.lastInsertRowid });
 });
 
