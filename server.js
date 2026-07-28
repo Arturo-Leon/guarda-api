@@ -202,8 +202,9 @@ app.get('/api/configuracion/precios', verifyToken, async (req, res) => {
 
 app.post('/api/configuracion/sistema', verifyToken, async (req, res) => {
     const { configSistema } = req.body;
+    const cleanConfig = JSON.parse(JSON.stringify(configSistema));
     await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configSistema']);
-    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(configSistema)]);
+    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(cleanConfig)]);
     res.json({ success: true });
 });
 
