@@ -3681,10 +3681,10 @@
                 <div class="p-3">
                     <div class="d-flex gap-2 mb-3 flex-wrap align-items-center">
                         <input type="text" id="buscarCliente" class="form-control" style="max-width:250px;" placeholder="🔍 Buscar por nombre o CI..." onkeyup="filtrarClientes()">
-                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('id', this)">Por ID</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('id', this)">ID</button>
                         <button class="btn btn-sm btn-outline-primary active" onclick="ordenarClientes('nombre', this)">Nombre</button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('gasto', this)">Más gasto</button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('registros', this)">Más registros</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('gasto', this)">Gastos</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="ordenarClientes('registros', this)">Registros</button>
                     </div>
                     <div class="table-wrapper">
                         <div class="table-responsive">
@@ -3803,9 +3803,14 @@
                 data.id = nextIdCliente++;
                 data.registros = 0;
                 data.total_gastado = 0;
-                clientes.push(data);
-                await apiCall('/clientes', { method: 'POST', body: JSON.stringify(data) });
-                mostrarToast('success', 'Cliente creado', `${data.nombre} creado`);
+                const result = await apiCall('/clientes', { method: 'POST', body: JSON.stringify(data) });
+                if (result.success) {
+                    data.id = result.id;
+                    clientes.push(data);
+                } else {
+                    mostrarToast('error', 'Error', 'No se pudo crear el cliente');
+                    return;
+                }
             }
             bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide();
             renderClientesPage();
