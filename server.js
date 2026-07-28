@@ -77,8 +77,15 @@ app.post('/api/clientes', verifyToken, async (req, res) => {
             [nombre, identificacion, telefono || '', email || '', direccion || '', registros || 0, total_gastado || 0, id]);
         res.json({ success: true, id: parseInt(id) });
     } else {
+        try {
         const result = await db.execute('INSERT INTO clientes (nombre, identificacion, telefono, email, direccion, registros, total_gastado) VALUES (?,?,?,?,?,?,?)',
         [nombre, identificacion, telefono || '', email || '', direccion || '', registros || 0, total_gastado || 0]);
+        } catch (err) {
+            if (err.message.includes('UNIQUE')) {
+        return res.status(400).json({ error: 'El cliente ya existe' });
+    }
+    throw err;
+}
         console.log('📝 INSERT clientes:', nombre, identificacion);
         const idResult = await db.execute('SELECT last_insert_rowid() as id');
         console.log('🆔 Nuevo ID:', idResult.rows[0]?.id);
