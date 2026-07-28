@@ -3789,6 +3789,7 @@
             };
             if (!data.nombre || !data.identificacion) { mostrarToast('warning', 'Campos incompletos', 'Complete nombre e identificación'); return; }
             const existe = clientes.find(c => c.identificacion === data.identificacion && c.id != id);
+            if (existe) {
                 mostrarToast('warning', 'Ya existe', 'El cliente ya está registrado');
                 return;
             }
@@ -3819,6 +3820,7 @@
             bootstrap.Modal.getInstance(document.getElementById('clienteModal')).hide();
             renderClientesPage();
         }
+        
 
         function editarCliente(id) { abrirModalCliente(id); }
 
