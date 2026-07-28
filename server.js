@@ -78,9 +78,11 @@ app.post('/api/clientes', verifyToken, async (req, res) => {
         res.json({ success: true, id: parseInt(id) });
     } else {
         const result = await db.execute('INSERT INTO clientes (nombre, identificacion, telefono, email, direccion, registros, total_gastado) VALUES (?,?,?,?,?,?,?)',
-            [nombre, identificacion, telefono || null, email || null, direccion || null, registros || 0, total_gastado || 0]);
+        [nombre, identificacion, telefono || null, email || null, direccion || null, registros || 0, total_gastado || 0]);
+        console.log('📝 INSERT clientes:', nombre, identificacion);
         const idResult = await db.execute('SELECT last_insert_rowid() as id');
-        res.json({ success: true, id: idResult.rows[0].id });
+        console.log('🆔 Nuevo ID:', idResult.rows[0]?.id);
+        res.json({ success: true, id: idResult.rows[0]?.id || 1 });
     }
 });
 
