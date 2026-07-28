@@ -3788,7 +3788,11 @@
                 direccion: document.getElementById('clienteDireccion').value
             };
             if (!data.nombre || !data.identificacion) { mostrarToast('warning', 'Campos incompletos', 'Complete nombre e identificación'); return; }
-
+            const existe = clientes.find(c => c.identificacion === data.identificacion);
+            if (existe) {
+                mostrarToast('warning', 'Ya existe', 'El cliente ya está registrado');
+                return;
+            }
             if (id) {
                 const idx = clientes.findIndex(c => c.id == id);
                 if (idx !== -1) {
