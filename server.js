@@ -49,7 +49,8 @@ app.get('/api/lockers', verifyToken, async (req, res) => {
 app.post('/api/lockers', verifyToken, async (req, res) => {
     const { codigo, tamanio, estado } = req.body;
     const result = await db.execute('INSERT INTO lockers (codigo, tamanio, estado) VALUES (?, ?, ?)', [codigo, tamanio || 'mediano', estado || 'disponible']);
-    res.json({ success: true, id: result.lastInsertRowid });
+    const idResult = await db.execute('SELECT last_insert_rowid() as id');
+    res.json({ success: true, id: idResult.rows[0].id });
 });
 
 app.put('/api/lockers/:id', verifyToken, async (req, res) => {
@@ -78,7 +79,8 @@ app.post('/api/clientes', verifyToken, async (req, res) => {
     } else {
         const result = await db.execute('INSERT INTO clientes (nombre, identificacion, telefono, email, direccion, registros, total_gastado) VALUES (?,?,?,?,?,?,?)',
             [nombre, identificacion, telefono || null, email || null, direccion || null, registros || 0, total_gastado || 0]);
-        res.json({ success: true, id: result.lastInsertRowid });
+        const idResult = await db.execute('SELECT last_insert_rowid() as id');
+        res.json({ success: true, id: idResult.rows[0].id });
     }
 });
 
@@ -115,7 +117,8 @@ app.post('/api/registros', verifyToken, async (req, res) => {
     if (locker_codigo) {
         await db.execute('UPDATE lockers SET estado = ? WHERE codigo = ?', ['ocupado', locker_codigo]);
     }
-    res.json({ success: true, id: result.lastInsertRowid });
+    const idResult = await db.execute('SELECT last_insert_rowid() as id');
+    res.json({ success: true, id: idResult.rows[0].id });
 });
 
 app.post('/api/registros/:id/retirar', verifyToken, async (req, res) => {
@@ -145,7 +148,8 @@ app.post('/api/movimientos', verifyToken, async (req, res) => {
     const { tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones } = req.body;
     const result = await db.execute('INSERT INTO movimientos_caja (tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones) VALUES (?,?,?,?,?,?,?,?,?)',
         [tipo, concepto, monto, metodo, fecha, hora, registro, descripcion || null, observaciones || null]);
-    res.json({ success: true, id: result.lastInsertRowid });
+    const idResult = await db.execute('SELECT last_insert_rowid() as id');
+    res.json({ success: true, id: idResult.rows[0].id });
 });
 
 app.put('/api/movimientos/:id', verifyToken, async (req, res) => {
@@ -165,7 +169,8 @@ app.post('/api/cierre', verifyToken, async (req, res) => {
     const { turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion } = req.body;
     const result = await db.execute(`INSERT INTO historial_cierres (turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones || null, descripcion || null]);
-    res.json({ success: true, id: result.lastInsertRowid });
+    const idResult = await db.execute('SELECT last_insert_rowid() as id');
+    res.json({ success: true, id: idResult.rows[0].id });
 });
 
 // ============ CONFIGURACIÓN ============
@@ -216,7 +221,8 @@ app.post('/api/sucursales', verifyToken, async (req, res) => {
         res.json({ success: true });
     } else {
         const result = await db.execute('INSERT INTO sucursales (nombre, direccion, telefono, email, activo) VALUES (?,?,?,?,?)', [nombre, direccion, telefono, email, activo || 1]);
-        res.json({ success: true, id: result.lastInsertRowid });
+        const idResult = await db.execute('SELECT last_insert_rowid() as id');
+        res.json({ success: true, id: idResult.rows[0].id });
     }
 });
 
@@ -239,7 +245,8 @@ app.post('/api/usuarios', verifyToken, async (req, res) => {
         res.json({ success: true });
     } else {
         const result = await db.execute('INSERT INTO usuarios (nombre, username, password, rol, activo, fecha_creacion) VALUES (?,?,?,?,?,datetime("now"))', [nombre, username, password || 'admin123', rol || 'operador', activo || 1]);
-        res.json({ success: true, id: result.lastInsertRowid });
+        const idResult = await db.execute('SELECT last_insert_rowid() as id');
+        res.json({ success: true, id: idResult.rows[0].id });
     }
 });
 
