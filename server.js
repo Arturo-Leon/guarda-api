@@ -115,7 +115,7 @@ app.get('/api/registros', verifyToken, async (req, res) => {
 app.post('/api/registros', verifyToken, async (req, res) => {
     const { numero_registro, codigo_equipaje, locker_id, locker_codigo, tamanio_locker, cliente_nombre, cliente_identificacion, cliente_telefono, descripcion_equipaje, fecha, hora, monto, estado, metodo_pago } = req.body;
     const result = await db.execute(`INSERT INTO registros (numero_registro, codigo_equipaje, locker_id, locker_codigo, tamanio_locker, cliente_nombre, cliente_identificacion, cliente_telefono, descripcion_equipaje, fecha, hora, monto, estado, metodo_pago) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [numero_registro, codigo_equipaje, locker_id || null, locker_codigo, tamanio_locker, cliente_nombre, cliente_identificacion, cliente_telefono || null, descripcion_equipaje || null, fecha, hora, monto, estado || 'activo', metodo_pago]);
+        [numero_registro, codigo_equipaje, locker_id || 0, locker_codigo, tamanio_locker, cliente_nombre, cliente_identificacion, cliente_telefono || '', descripcion_equipaje || '', fecha, hora, monto, estado || 'activo', metodo_pago]);
     if (locker_codigo) {
         await db.execute('UPDATE lockers SET estado = ? WHERE codigo = ?', ['ocupado', locker_codigo]);
     }
