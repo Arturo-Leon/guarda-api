@@ -3800,7 +3800,7 @@
                     mostrarToast('success', 'Cliente actualizado', `${data.nombre} actualizado`);
                 }
             } else {
-                data.id = nextIdCliente++;
+                
                 data.registros = 0;
                 data.total_gastado = 0;
                 const result = await apiCall('/clientes', { method: 'POST', body: JSON.stringify(data) });
