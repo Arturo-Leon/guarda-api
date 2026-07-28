@@ -171,8 +171,7 @@ app.post('/api/cierre', verifyToken, async (req, res) => {
     const { turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion } = req.body;
     const result = await db.execute(`INSERT INTO historial_cierres (turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones, descripcion) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [turno, fechaApertura, horaApertura, fechaCierre, horaCierre, montoInicial, ingresos, egresos, pendientes, totalEsperado, arqueoEfectivo, diferencia, estado, observaciones || null, descripcion || null]);
-    const idResult = await db.execute('SELECT last_insert_rowid() as id');
-    res.json({ success: true, id: idResult.rows[0].id });
+    res.json({ success: true, id: result.lastInsertRowid });
 });
 
 // ============ CONFIGURACIÓN ============
