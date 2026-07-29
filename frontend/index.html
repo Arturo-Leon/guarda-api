@@ -4060,10 +4060,13 @@
                 body: JSON.stringify({
                     tipo: 'apertura',
                     concepto: 'Apertura de caja',
-                    monto: monto,
-                    observaciones: document.getElementById('observacionesApertura')?.value || '',
+                    monto: monto || 0,
+                    metodo: '',
                     fecha: ahora.toLocaleDateString(),
-                    hora: ahora.toLocaleTimeString()
+                    hora: ahora.toLocaleTimeString(),
+                    registro: '',
+                    descripcion: document.getElementById('observacionesApertura')?.value || '',
+                    observaciones: document.getElementById('observacionesApertura')?.value || ''
                 })
             });
 
@@ -4071,9 +4074,13 @@
                 id: result.id || result.lastID || Date.now(),
                 tipo: 'apertura',
                 concepto: 'Apertura de caja',
-                monto: monto,
+                monto: monto || 0,
+                metodo: '',
                 fecha: ahora.toLocaleDateString(),
-                hora: ahora.toLocaleTimeString()
+                hora: ahora.toLocaleTimeString(),
+                registro: '',
+                descripcion: document.getElementById('observacionesApertura')?.value || '',
+                observaciones: document.getElementById('observacionesApertura')?.value || ''
             });
 
             mostrarToast('success', 'Caja abierta', `Monto inicial: Bs. ${monto.toFixed(2)}`);
