@@ -156,7 +156,7 @@ app.get('/api/movimientos', verifyToken, async (req, res) => {
 app.post('/api/movimientos', verifyToken, async (req, res) => {
     const { tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones } = req.body;
     const result = await db.execute('INSERT INTO movimientos_caja (tipo, concepto, monto, metodo, fecha, hora, registro, descripcion, observaciones) VALUES (?,?,?,?,?,?,?,?,?)',
-        [tipo, concepto, monto, metodo, fecha, hora, registro, descripcion || '', observaciones || '']);
+        [tipo || '', concepto || '', monto || 0, metodo || '', fecha || '', hora || '', registro || '', descripcion || '', observaciones || '']);
     const idResult = await db.execute('SELECT last_insert_rowid() as id');
     res.json({ success: true, id: idResult.rows[0].id });
 });
