@@ -202,11 +202,17 @@ app.get('/api/configuracion/precios', verifyToken, async (req, res) => {
 });
 
 app.post('/api/configuracion/sistema', verifyToken, async (req, res) => {
-    const { configSistema } = req.body;
-    const cleanConfig = JSON.parse(JSON.stringify(configSistema));
-    await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configSistema']);
-    await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(cleanConfig)]);
-    res.json({ success: true });
+    try {
+        const { configSistema } = req.body;
+        const cleanConfig = JSON.parse(JSON.stringify(configSistema));
+        await db.execute('DELETE FROM configuracion WHERE clave = ?', ['configSistema']);
+        await db.execute('INSERT INTO configuracion (clave, valor) VALUES (?, ?)', ['configSistema', JSON.stringify(cleanConfig)]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error guardando config:', err.message);
+        res.status(500).json({ error: 'Error al guardar configuración' });
+    }
+
 });
 
 app.get('/api/configuracion/sistema', verifyToken, async (req, res) => {
