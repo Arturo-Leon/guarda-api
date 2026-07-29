@@ -2036,7 +2036,9 @@
         .header strong {
             font-size: 1rem !important;
         }
-        html, body {
+    }
+
+    html, body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -2046,7 +2048,6 @@
             background-attachment: fixed;
             background-size: cover;
         }
-    }
     
     </style>
 </head>
@@ -3288,7 +3289,7 @@
                                 legend: {
                                     position: 'bottom',
                                     labels: {
-                                        boxWidth: 8,
+                                        boxWidth: 16,
                                         padding: 8
                                     }
                                 }
@@ -3427,7 +3428,8 @@
                     method: 'POST',
                     body: JSON.stringify(clienteExistente)
                 });
-                mostrarToast('info', 'Cliente existente', `Bienvenido nuevamente ${nombre}`);
+                mostrarToast('success', 'Registro exitoso', `Registro creado para ${nombre}`);
+                //mostrarToast('info', 'Cliente existente', `Bienvenido nuevamente ${nombre}`);
             }
 
             // Crear registro
@@ -3606,7 +3608,7 @@
                 method: 'POST',
                 body: JSON.stringify({
                     fecha_retiro: new Date().toLocaleDateString(),
-                    hora_retiro: new Date().toLocaleTimeString(),
+                    hora_retiro: new Date().toLocaleTimeString('es-BO', { hour12: false }),
                     metodo_pago: metodoPagoRetiro,
                     monto: montoFinal
                 })
@@ -3623,7 +3625,7 @@
             registroEncontrado.estado = 'finalizado';
             registroEncontrado.metodo_pago = metodoPagoRetiro;
             registroEncontrado.fecha_retiro = new Date().toLocaleDateString();
-            registroEncontrado.hora_retiro = new Date().toLocaleTimeString();
+            registroEncontrado.hora_retiro = new Date().toLocaleTimeString('es-BO', { hour12: false });
 
             // Buscar el movimiento pendiente en SQLite por número de registro
             const movData = await apiCall('/movimientos');
@@ -3647,7 +3649,7 @@
                         monto: montoFinal,
                         metodo: metodoPagoRetiro,
                         fecha: new Date().toLocaleDateString(),
-                        hora: new Date().toLocaleTimeString(),
+                        hora: new Date().toLocaleTimeString('es-BO', { hour12: false }),
                         registro: registroEncontrado.numero_registro
                     })
                 })
@@ -4274,7 +4276,7 @@
                     fechaApertura: cajaActual.fechaApertura,
                     horaApertura: cajaActual.horaApertura,
                     fechaCierre: new Date().toLocaleDateString(),
-                    horaCierre: new Date().toLocaleTimeString(),
+                    horaCierre: new Date().toLocaleTimeString('es-BO', { hour12: false }),
                     montoInicial: cajaActual.montoInicial,
                     ingresos, egresos, pendientes, totalEsperado,
                     arqueoEfectivo: arqueo, diferencia, estado: estadoTexto, observaciones: obs, descripcion: obs
@@ -4288,7 +4290,7 @@
                     fechaApertura: cajaActual.fechaApertura,
                     horaApertura: cajaActual.horaApertura,
                     fechaCierre: new Date().toLocaleDateString(),
-                    horaCierre: new Date().toLocaleTimeString(),
+                    horaCierre: new Date().toLocaleTimeString('es-BO', { hour12: false }),
                     montoInicial: cajaActual.montoInicial,
                     ingresos, egresos, pendientes, totalEsperado,
                     arqueoEfectivo: arqueo, diferencia, estado: estadoTexto, observaciones: obs, descripcion: obs
@@ -4304,7 +4306,7 @@
                     monto: totalEsperado,
                     metodo: 'EFECTIVO',
                     fecha: new Date().toLocaleDateString(),
-                    hora: new Date().toLocaleTimeString()
+                    hora: new new Date().toLocaleTimeString('es-BO', { hour12: false })
                 });
                 await apiCall('/movimientos', {
                     method: 'POST',
@@ -4314,7 +4316,7 @@
                         monto: totalEsperado,
                         metodo: 'EFECTIVO',
                         fecha: new Date().toLocaleDateString(),
-                        hora: new Date().toLocaleTimeString()
+                        hora: new Date().toLocaleTimeString('es-BO', { hour12: false })
                     })
                 });
             }
@@ -5173,7 +5175,7 @@
             const empresa = configSistema.establecimiento?.nombre || 'Guarda Equipajes';
             const usuario = usuarioActual?.nombre || 'Administrador';
             const fecha = new Date().toLocaleDateString();
-            const hora = new Date().toLocaleTimeString();
+            const hora = new Date().toLocaleTimeString('es-BO', { hour12: false });
 
             let filasResumen = '';
             document.querySelectorAll('#resumenVentasBody tr').forEach(row => {
@@ -5251,10 +5253,10 @@
             const empresa = configSistema.establecimiento?.nombre || 'Guarda Equipajes';
             const usuario = usuarioActual?.nombre || 'Administrador';
             const fecha = new Date().toLocaleDateString();
-            const hora = new Date().toLocaleTimeString();
+            const hora = new Date().toLocaleTimeString('es-BO', { hour12: false });
 
             let filas = '';
-            const totalCierresEl = document.querySelector('#tablaDetalleMovimientos .total-row td:last-child');
+            const totalCierresEl = document.querySelector('#tablaDetalleMovimientos tr.table-active td:last-child');
             const totalCierres = totalCierresEl ? totalCierresEl.innerText : 'Bs. 0.00';
             document.querySelectorAll('#tablaDetalleMovimientos tr').forEach(row => {
                 const celdas = row.querySelectorAll('td');
@@ -5469,7 +5471,7 @@
             const logo = configSistema.apariencia?.logo || '';
             const empresa = configSistema.establecimiento?.nombre || 'Guarda Equipajes';
             const fecha = new Date().toLocaleDateString();
-            const hora = new Date().toLocaleTimeString();
+            const hora = new Date().toLocaleTimeString('es-BO', { hour12: false });
 
             let filas = '';
             document.querySelectorAll('#historialBody tr').forEach(row => {
@@ -6178,6 +6180,12 @@
                 document.getElementById('histFechaHasta').value = '';
             }
             filtrarHistorial();
+        }
+
+        function formatearHora(hora) {
+            if (!hora) return '';
+            if (hora.includes(':')) return hora; // ya está en 24h
+            return hora;
         }
             
         // ========================================
