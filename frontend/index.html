@@ -2017,6 +2017,7 @@
             transform: translateX(0) !important;
             padding-left: 20px !important;
         }
+
         @media (max-width: 768px) {
         .btn {
             font-size: 0.8rem !important;
@@ -2036,7 +2037,7 @@
             font-size: 1rem !important;
         }
     }
-        
+    
     </style>
 </head>
 
@@ -5230,6 +5231,8 @@
             const hora = new Date().toLocaleTimeString();
 
             let filas = '';
+            const totalCierresEl = document.querySelector('#tablaDetalleMovimientos .total-row td:last-child');
+            const totalCierres = totalCierresEl ? totalCierresEl.innerText : 'Bs. 0.00';
             document.querySelectorAll('#tablaDetalleMovimientos tr').forEach(row => {
                 const celdas = row.querySelectorAll('td');
                 if (celdas.length >= 10) {
@@ -5277,6 +5280,7 @@
             </div>
             <div class="reporte-titulo"><h1>DETALLE DE MOVIMIENTOS</h1></div>
             <table class="tabla"><thead><tr><th>#</th><th>Registro F/H</th><th>Retiro F/H</th><th>Usuario</th><th>Tipo</th><th>Concepto</th><th>Observaciones</th><th>Num.REG</th><th>Método</th><th>Monto</th></tr></thead><tbody>${filas}</tbody></table>
+            <tfoot><tr class="total-row"><td colspan="9" style="text-align:right;font-weight:bold;">TOTAL CIERRES DEL PERÍODO:</td><td style="text-align:right;font-weight:bold;">${totalCierres}</td></tr></tfoot>
             <div class="footer">Documento generado por ${empresa} - ${fecha} ${hora}</div>
             <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
             printWindow.document.close();
@@ -5475,10 +5479,13 @@
         @media print { body { -webkit-print-color-adjust: exact; } }
             </style></head>
             <body>
-            <div class="reporte-header">
-                <div class="header-logo">${logo ? `<img src="${logo}" class="logo-img">` : ''}<div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div></div>
-                <div class="header-datos"><strong>Fecha:</strong> ${fecha} ${hora}</div>
+        <div class="reporte-header">
+            <div class="header-logo">
+                ${logo ? `<img src="${logo}" class="logo-img">` : ''}
+                <div class="empresa-info"><h2>${empresa}</h2><p>Historial Completo</p></div>
             </div>
+            <div class="header-datos"><strong>Fecha:</strong> ${fecha} ${hora}</div>
+        </div>
             <div class="reporte-titulo"><h1>HISTORIAL COMPLETO</h1></div>
             <table class="tabla"><thead><tr><th>N° Reg</th><th>Cliente</th><th>ID</th><th>Locker</th><th>Fecha</th><th>Retiro</th><th>Monto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table>
             <div class="footer">${empresa} - ${fecha}</div>
