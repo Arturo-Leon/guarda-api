@@ -2041,7 +2041,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             background-attachment: fixed;
             background-size: cover;
@@ -3281,7 +3281,20 @@
                             labels: ['Efectivo', 'Tarjeta', 'QR'],
                             datasets: [{ data: [metodos.efectivo, metodos.tarjeta, metodos.qr], backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6'] }]
                         },
-                        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        boxWidth: 8,
+                                        padding: 8
+                                    }
+                                }
+                            }
+                        }
+
                     });
                 }
             }, 300);
