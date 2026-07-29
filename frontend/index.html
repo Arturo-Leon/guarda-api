@@ -3305,7 +3305,7 @@
             const html = `
             <div class="dashboard-card">
                 <div class="header">
-                    <div><i class="fas fa-th-large fa-2x me-2"></i><strong style="font-size:24px;">Mapa de Lockers</strong><p>Vista general de ocupación</p></div>
+                    <div><i class="fas fa-th-large fa-2x me-2"></i><strong style="font-size:24px;">Mapa de Lockers</strong><p>Vista general</p></div>
                     <button class="btn btn-outline-light btn-sm" onclick="cargarPagina('mapa_lockers')"><i class="fas fa-sync-alt"></i> Actualizar</button>
                 </div>
                 <div class="p-4"><div class="lockers-grid" id="lockersGrid"></div></div>
@@ -3723,7 +3723,7 @@
             const html = `
             <div class="dashboard-card">
                 <div class="header">
-                    <div><i class="fas fa-users fa-2x me-2"></i><strong style="font-size:24px;">Gestión de Clientes</strong><p>Administrar clientes del sistema</p></div>
+                    <div><i class="fas fa-users fa-2x me-2"></i><strong style="font-size:24px;">Gestión de Clientes</strong><p>Clientes del sistema</p></div>
                     <button class="btn btn-outline-light btn-sm" onclick="abrirModalCliente()"><i class="fas fa-plus-circle me-1"></i> Nuevo Cliente</button>
                 </div>
                 <div class="p-3">
@@ -3894,7 +3894,7 @@
             const html = `
         <div class="dashboard-card">
             <div class="header">
-                <div><i class="fas fa-cube fa-2x me-2"></i><strong style="font-size:24px;">Gestión de Lockers</strong><p>Administrar lockers del sistema</p></div>
+                <div><i class="fas fa-cube fa-2x me-2"></i><strong style="font-size:24px;">Gestión de Lockers</strong><p>Administrar Lockers</p></div>
                 <button class="btn btn-outline-light btn-sm" onclick="abrirCrearLocker()"><i class="fas fa-plus-circle me-1"></i> Nuevo Locker</button>
             </div>
             <div class="stats-grid" style="padding:20px;">
@@ -4007,7 +4007,7 @@
             const pendientes = todosMovimientosHoy.filter(m => m.tipo === 'ingreso_pendiente').reduce((s, m) => s + m.monto, 0);
             const totalIngresos = ingresosEfectivo + ingresosTarjeta + ingresosQR + ingresosManual;
             const totalCaja = totalIngresos - egresosManual;
-            const html = `<div class="dashboard-card"><div class="header"><div><i class="fas fa-cash-register fa-2x me-2"></i><strong>Módulo de Caja</strong><p> Gestión de movimientos de Caja</p></div><span class="badge ${cajaActual.estado === 'abierta' ? 'bg-success' : 'bg-secondary'}">${cajaActual.estado === 'abierta' ? 'CAJA ABIERTA' : 'CAJA CERRADA'}</span></div>
+            const html = `<div class="dashboard-card"><div class="header"><div><i class="fas fa-cash-register fa-2x me-2"></i><strong>Módulo de Caja</strong><p>Movimientos de Caja</p></div><span class="badge ${cajaActual.estado === 'abierta' ? 'bg-success' : 'bg-secondary'}">${cajaActual.estado === 'abierta' ? 'CAJA ABIERTA' : 'CAJA CERRADA'}</span></div>
             <div class="stats-grid"><div class="stat-card"><div class="stat-number">Bs. ${totalCaja.toFixed(2)}</div><p>Total en Caja</p></div>
             <div class="stat-card"><div class="stat-number text-success">Bs. ${totalIngresos.toFixed(2)}</div><p>Total Ingresos</p></div>
             <div class="stat-card"><div class="stat-number text-danger">Bs. ${egresosManual.toFixed(2)}</div><p>Total Egresos</p></div>
@@ -4462,7 +4462,7 @@
             const html = `
             <div class="dashboard-card">
                 <div class="header">
-                    <div><i class="fas fa-sliders-h fa-2x me-2"></i><strong>Configuración de Precios</strong><p>Configuración de precios del Sistema</p></div>
+                    <div><i class="fas fa-sliders-h fa-2x me-2"></i><strong>Configuración de Precios</strong><p>Precios del Sistema</p></div>
                     <button class="btn btn-outline-light btn-sm" onclick="guardarConfiguracionCompleta()"><i class="fas fa-save me-1"></i> Guardar Todo</button>
                 </div>
                 <div class="p-4">
@@ -4576,7 +4576,7 @@
             const logoVal = configSistema.apariencia?.logo || null;
 
             const html = `
-            <div class="dashboard-card"><div class="header"><div><i class="fas fa-cog fa-2x me-2"></i><strong>Configuración del Sistema</strong><p>Configuración general del Sistema</p></div><button class="btn btn-outline-light btn-sm" onclick="guardarConfigSistema()"><i class="fas fa-save me-1"></i> Guardar Cambios</button></div>
+            <div class="dashboard-card"><div class="header"><div><i class="fas fa-cog fa-2x me-2"></i><strong>Configuración del Sistema</strong><p>Configuración General</p></div><button class="btn btn-outline-light btn-sm" onclick="guardarConfigSistema()"><i class="fas fa-save me-1"></i> Guardar Cambios</button></div>
             <div class="p-4">
                 <div class="config-section"><div class="d-flex justify-content-between align-items-center mb-3"><h5><i class="fas fa-users-cog me-2"></i>Gestión de Usuarios</h5><button class="btn btn-sm" style="background:#d43b00;color:white;" onclick="abrirModalUsuario()"><i class="fas fa-plus-circle me-1"></i> Nuevo Usuario</button></div><hr>
                 <div class="table-responsive"><table class="table table-hover"><thead class="table-light"><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="usuariosBodyConfig"></tbody></table></div></div>
