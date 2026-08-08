@@ -5087,6 +5087,10 @@
             const totalFinalizados = (resumenLockers.pequeño || 0) + (resumenLockers.mediano || 0) + (resumenLockers.grande || 0) + ingresosManuales.length;
             const totalRegistros = totalPendientes + totalFinalizados + egresosManuales.length;
             const totalRecaudado = (totalesLockers.pequeño || 0) + (totalesLockers.mediano || 0) + (totalesLockers.grande || 0) + totalIngresosManuales - totalEgresosManuales;
+
+            console.log('totalRegistros:', totalRegistros, 'totalRecaudado:', totalRecaudado);
+            console.log('elemento totalRegistrosResumen:', document.getElementById('totalRegistrosResumen'));
+            console.log('elemento totalRecaudadoResumen:', document.getElementById('totalRecaudadoResumen'));
             if (document.getElementById('totalRegistrosResumen')) document.getElementById('totalRegistrosResumen').innerText = totalRegistros;
             if (document.getElementById('totalRecaudadoResumen')) document.getElementById('totalRecaudadoResumen').innerHTML = `Bs. ${totalRecaudado.toFixed(2)}`;
 
