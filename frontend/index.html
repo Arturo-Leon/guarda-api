@@ -3506,15 +3506,18 @@
         }
 
         function imprimirTicket(registro) {
-            const printWindow = window.open('', '_blank');
             const ahora = new Date();
             const logo = configSistema.apariencia?.logo || '';
             const empresa = configSistema.establecimiento?.nombre || 'GUARDA EQUIPAJES';
             const direccion = configSistema.establecimiento?.direccion || '';
             const telefono = configSistema.establecimiento?.telefono || '';
-            printWindow.document.write(`<html><head><title>Ticket - ${registro.numero_registro}</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.left{text-align:left;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3>${direccion ? `<p>${direccion}</p>` : ''}${telefono ? `<p>Tel: ${telefono}</p>` : ''}</div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${registro.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${registro.codigo_equipaje}</p><p><span class="bold">FECHA:</span> ${registro.fecha}</p><p><span class="bold">HORA:</span> ${registro.hora || ''}</p><p><span class="bold">LOCKER:</span> ${registro.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${registro.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${registro.cliente_identificacion}</p>${registro.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${registro.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">Presente este ticket para retirar su equipaje</p></div><div class="line"></div><div class="center">${configSistema.establecimiento?.horario ? `<p><span class="bold">HORARIO DE ATENCIÓN:</span> ${configSistema.establecimiento.horario}</p>` : ''}
-            ${configSistema.establecimiento?.servicios ? `<p><span class="bold">SERVICIOS:</span> ${configSistema.establecimiento.servicios}</p>` : ''}<p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
-            printWindow.document.close();
+
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(`<html><head><title>Ticket - ${registro.numero_registro}</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3>${direccion ? `<p>${direccion}</p>` : ''}${telefono ? `<p>Tel: ${telefono}</p>` : ''}</div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${registro.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${registro.codigo_equipaje}</p><p><span class="bold">FECHA:</span> ${registro.fecha}</p><p><span class="bold">HORA:</span> ${registro.hora || ''}</p><p><span class="bold">LOCKER:</span> ${registro.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${registro.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${registro.cliente_identificacion}</p>${registro.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${registro.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">Presente este ticket para retirar su equipaje</p></div><div class="line"></div><div class="center"><p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.close();
+            setTimeout(() => document.body.removeChild(iframe), 2000);
         }
 
         function reimprimirTicket(id) {
@@ -3577,6 +3580,10 @@
         }
 
         async function confirmarRetiro() {
+            if (cajaActual.estado !== 'abierta') {
+                mostrarToast('warning', 'Caja cerrada', 'Abra la caja primero');
+                return;
+            }
             if (!registroEncontrado) { mostrarToast('warning', 'Sin registro', 'No hay un registro seleccionado'); return; }
             if (!metodoPagoRetiro) { mostrarToast('warning', 'Seleccione método', 'Debe seleccionar un método de pago'); return; }
 
@@ -3691,17 +3698,16 @@
             const r = registro || registroEncontrado || null;
             if (!r) return;
             const m = metodoPago || metodoPagoRetiro;
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) {
-                mostrarToast('error', 'Error', 'Permita las ventanas emergentes para imprimir');
-                return;
-            }
             const ahora = new Date();
             const logo = configSistema.apariencia?.logo || '';
             const empresa = configSistema.establecimiento?.nombre || 'GUARDA EQUIPAJES';
-            printWindow.document.write(`<html><head><title>Comprobante Retiro</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}h4{margin:5px 0;font-size:13px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3><h4>COMPROBANTE DE RETIRO</h4></div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${r.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${r.codigo_equipaje}</p><p><span class="bold">FECHA INGRESO:</span> ${r.fecha} ${r.hora || ''}</p><p><span class="bold">FECHA RETIRO:</span> ${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString()}</p><p><span class="bold">LOCKER:</span> ${r.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${r.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${r.cliente_identificacion}</p>${r.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${r.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">TOTAL PAGADO: Bs. ${r.monto.toFixed(2)}</p><p class="bold">MÉTODO: ${m ? m.toUpperCase() : 'PENDIENTE'}</p></div><div class="line"></div><div class="center">${configSistema.establecimiento?.horario ? `<p><span class="bold">HORARIO DE ATENCIÓN:</span> ${configSistema.establecimiento.horario}</p>` : ''}
-            ${configSistema.establecimiento?.servicios ? `<p><span class="bold">SERVICIOS:</span> ${configSistema.establecimiento.servicios}</p>` : ''}<p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
-            printWindow.document.close();
+
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(`<html><head><title>Comprobante Retiro</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}h4{margin:5px 0;font-size:13px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3><h4>COMPROBANTE DE RETIRO</h4></div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${r.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${r.codigo_equipaje}</p><p><span class="bold">FECHA INGRESO:</span> ${r.fecha} ${r.hora || ''}</p><p><span class="bold">FECHA RETIRO:</span> ${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString('es-BO', { hour12: false })}</p><p><span class="bold">LOCKER:</span> ${r.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${r.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${r.cliente_identificacion}</p>${r.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${r.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">TOTAL PAGADO: Bs. ${r.monto.toFixed(2)}</p><p class="bold">MÉTODO: ${m ? m.toUpperCase() : 'PENDIENTE'}</p></div><div class="line"></div><div class="center"><p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.close();
+            setTimeout(() => document.body.removeChild(iframe), 2000);
         }
 
         function imprimirTicketRetiroActualizado() {
@@ -4149,6 +4155,10 @@
         }
 
         async function registrarMovimientoManual() {
+            if (cajaActual.estado !== 'abierta') {
+                mostrarToast('warning', 'Caja cerrada', 'Abra la caja primero');
+                return;
+            }
             const concepto = document.getElementById('conceptoMovimiento').value.trim();
             const monto = parseFloat(document.getElementById('montoMovimiento').value);
             const metodo = document.getElementById('metodoMovimiento').value;
@@ -4335,76 +4345,31 @@
         }
 
         function imprimirFlujoEfectivo() {
-            if (cajaActual.estado !== 'abierta') { mostrarToast('warning', 'Caja cerrada', 'No hay turno activo'); return; }
+                if (cajaActual.estado !== 'abierta') { mostrarToast('warning', 'Caja cerrada', 'No hay turno activo'); return; }
 
-            const ahora = new Date();
-            const logo = configSistema.apariencia?.logo || '';
-            const empresa = configSistema.establecimiento?.nombre || 'GUARDA EQUIPAJES';
-            const direccion = configSistema.establecimiento?.direccion || '';
-            const telefono = configSistema.establecimiento?.telefono || '';
-            const ruc = configSistema.establecimiento?.ruc || '';
+                const ahora = new Date();
+                const logo = configSistema.apariencia?.logo || '';
+                const empresa = configSistema.establecimiento?.nombre || 'GUARDA EQUIPAJES';
+                const direccion = configSistema.establecimiento?.direccion || '';
+                const telefono = configSistema.establecimiento?.telefono || '';
+                const ruc = configSistema.establecimiento?.ruc || '';
 
-            const ingresosEfectivo = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'efectivo').reduce((s, m) => s + m.monto, 0);
-            const ingresosTarjeta = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'tarjeta').reduce((s, m) => s + m.monto, 0);
-            const ingresosQR = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'qr').reduce((s, m) => s + m.monto, 0);
-            const ingresosManual = movimientosCaja.filter(m => m.tipo === 'ingreso_manual').reduce((s, m) => s + m.monto, 0);
-            const egresosManual = movimientosCaja.filter(m => m.tipo === 'egreso_manual').reduce((s, m) => s + m.monto, 0);
-            const pendientes = movimientosCaja.filter(m => m.tipo === 'ingreso_pendiente').reduce((s, m) => s + m.monto, 0);
-            const subtotalIngresos = ingresosEfectivo + ingresosTarjeta + ingresosQR + ingresosManual;
-            const totalCaja = cajaActual.montoInicial + subtotalIngresos - egresosManual;
+                const ingresosEfectivo = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'efectivo').reduce((s, m) => s + m.monto, 0);
+                const ingresosTarjeta = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'tarjeta').reduce((s, m) => s + m.monto, 0);
+                const ingresosQR = movimientosCaja.filter(m => m.tipo === 'ingreso_realizado' && m.metodo === 'qr').reduce((s, m) => s + m.monto, 0);
+                const ingresosManual = movimientosCaja.filter(m => m.tipo === 'ingreso_manual').reduce((s, m) => s + m.monto, 0);
+                const egresosManual = movimientosCaja.filter(m => m.tipo === 'egreso_manual').reduce((s, m) => s + m.monto, 0);
+                const pendientes = movimientosCaja.filter(m => m.tipo === 'ingreso_pendiente').reduce((s, m) => s + m.monto, 0);
+                const subtotalIngresos = ingresosEfectivo + ingresosTarjeta + ingresosQR + ingresosManual;
+                const totalCaja = cajaActual.montoInicial + subtotalIngresos - egresosManual;
 
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Flujo de Efectivo</title>
-            <style>
-                *{margin:0;padding:0;box-sizing:border-box;}
-                body{font-family:'Courier New',monospace;width:320px;margin:0 auto;padding:12px;font-size:11px;}
-                .center{text-align:center;}
-                .line{border-top:1px dashed #000;margin:6px 0;}
-                .bold{font-weight:bold;}
-                .logo{max-width:70px;max-height:70px;margin:0 auto;display:block;}
-                h2{font-size:15px;margin:5px 0;}
-                h3{font-size:12px;margin:3px 0;}
-                .item{display:flex;justify-content:space-between;padding:2px 0;}
-                .total{font-weight:bold;font-size:12px;}
-                .text-success{color:#2e7d32;}
-                .text-danger{color:#d32f2f;}
-                .text-warning{color:#ed6c02;}
-            </style></head>
-            <body>
-                <div class="center">
-                    ${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}
-                    <h2>${empresa}</h2>
-                    ${direccion ? `<p>${direccion}</p>` : ''}
-                    ${telefono ? `<p>Tel: ${telefono}</p>` : ''}
-                    ${ruc ? `<p>RUC: ${ruc}</p>` : ''}
-                </div>
-                <div class="line"></div>
-                <div class="center"><h3>REPORTE DE FLUJO DE EFECTIVO</h3></div>
-                <div class="line"></div>
-                <p class="bold">Turno: #${cajaActual.turno}</p>
-                <p>Encargado: ${cajaActual.operador}</p>
-                <p>Apertura: ${cajaActual.fechaApertura} ${cajaActual.horaApertura}</p>
-                <p>Monto Inicial: <strong>Bs. ${cajaActual.montoInicial.toFixed(2)}</strong></p>
-                <div class="line"></div>
-                <p class="bold">INGRESOS:</p>
-                <div class="item"><span>Efectivo:</span><strong>Bs. ${ingresosEfectivo.toFixed(2)}</strong></div>
-                <div class="item"><span>Tarjeta:</span><strong>Bs. ${ingresosTarjeta.toFixed(2)}</strong></div>
-                <div class="item"><span>QR:</span><strong>Bs. ${ingresosQR.toFixed(2)}</strong></div>
-                <div class="item"><span>Manuales:</span><strong>Bs. ${ingresosManual.toFixed(2)}</strong></div>
-                <div class="line"></div>
-                <div class="item total"><span>SUBTOTAL:</span><strong>Bs. ${subtotalIngresos.toFixed(2)}</strong></div>
-                <div class="item"><span>EGRESOS:</span><strong class="text-danger">- Bs. ${egresosManual.toFixed(2)}</strong></div>
-                <div class="item"><span>PENDIENTES:</span><strong class="text-warning">Bs. ${pendientes.toFixed(2)}</strong></div>
-                <div class="item total" style="font-size:14px;"><span>TOTAL EN CAJA:</span><strong>Bs. ${totalCaja.toFixed(2)}</strong></div>
-                <div class="line"></div>
-                <div class="center">
-                    <p>${ahora.toLocaleString()}</p>
-                    <p>Gracias por confiar en nosotros</p>
-                </div>
-                <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script>
-            </body></html>`);
-            printWindow.document.close();
-        }
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+                iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Flujo de Efectivo</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:320px;margin:0 auto;padding:12px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:6px 0;}.bold{font-weight:bold;}.logo{max-width:70px;max-height:70px;margin:0 auto;display:block;}h2{font-size:15px;margin:5px 0;}h3{font-size:12px;margin:3px 0;}.item{display:flex;justify-content:space-between;padding:2px 0;}.total{font-weight:bold;font-size:12px;}.text-success{color:#2e7d32;}.text-danger{color:#d32f2f;}.text-warning{color:#ed6c02;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h2>${empresa}</h2>${direccion ? `<p>${direccion}</p>` : ''}${telefono ? `<p>Tel: ${telefono}</p>` : ''}${ruc ? `<p>RUC: ${ruc}</p>` : ''}</div><div class="line"></div><div class="center"><h3>REPORTE DE FLUJO DE EFECTIVO</h3></div><div class="line"></div><p class="bold">Turno: #${cajaActual.turno}</p><p>Encargado: ${cajaActual.operador}</p><p>Apertura: ${cajaActual.fechaApertura} ${cajaActual.horaApertura}</p><p>Monto Inicial: <strong>Bs. ${cajaActual.montoInicial.toFixed(2)}</strong></p><div class="line"></div><p class="bold">INGRESOS:</p><div class="item"><span>Efectivo:</span><strong>Bs. ${ingresosEfectivo.toFixed(2)}</strong></div><div class="item"><span>Tarjeta:</span><strong>Bs. ${ingresosTarjeta.toFixed(2)}</strong></div><div class="item"><span>QR:</span><strong>Bs. ${ingresosQR.toFixed(2)}</strong></div><div class="item"><span>Manuales:</span><strong>Bs. ${ingresosManual.toFixed(2)}</strong></div><div class="line"></div><div class="item total"><span>SUBTOTAL:</span><strong>Bs. ${subtotalIngresos.toFixed(2)}</strong></div><div class="item"><span>EGRESOS:</span><strong class="text-danger">- Bs. ${egresosManual.toFixed(2)}</strong></div><div class="item"><span>PENDIENTES:</span><strong class="text-warning">Bs. ${pendientes.toFixed(2)}</strong></div><div class="line"></div><div class="item total" style="font-size:14px;"><span>TOTAL EN CAJA:</span><strong>Bs. ${totalCaja.toFixed(2)}</strong></div><div class="line"></div><div class="center"><p>${ahora.toLocaleString()}</p><p>Gracias por confiar en nosotros</p></div><script>window.print();<\/script></body></html>`);
+                iframe.contentDocument.close();
+                setTimeout(() => document.body.removeChild(iframe), 2000);
+            }
 
         async function cerrarDia() {
             if (cajaActual.estado === 'abierta') { mostrarToast('warning', 'Caja abierta', 'Cierre la caja primero'); return; }
@@ -5169,8 +5134,6 @@
         }
 
         function exportarResumenVentasPDF() {
-            const ventana = window.open('', '_blank');
-            if (!ventana) return;
             const fechaDesde = document.getElementById('fechaDesde').value;
             const fechaHasta = document.getElementById('fechaHasta').value;
             const logo = configSistema.apariencia?.logo || '';
@@ -5186,54 +5149,15 @@
                     filasResumen += `<tr><td>${celdas[0].innerText}</td><td>${celdas[1].innerText}</td><td>${celdas[2].innerText}</td><td>${celdas[3].innerText}</td><td>${celdas[4].innerText}</td></tr>`;
                 }
             });
-
             const totalReg = document.getElementById('totalRegistrosResumen')?.innerText || '0';
-            const totalRec = document.getElementById('totalRecaudadoResumen')?.innerHTML || 'Bs. 0.00';
+            const totalRec = document.getElementById('totalRecaudadoResumen')?.innerText || 'Bs. 0.00';
 
-            ventana.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resumen de Ventas</title>
-            <style>
-            @page { size: A4; margin: 10mm; }
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #1a1a1a; padding: 0; }
-            .reporte-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d43b00; padding-bottom: 10px; margin-bottom: 15px; }
-            .header-logo { display: flex; align-items: center; gap: 10px; }
-            .logo-img { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; }
-            .empresa-info h2 { font-size: 16px; color: #d43b00; margin: 0; }
-            .empresa-info p { font-size: 9px; color: #666; margin: 2px 0; }
-            .header-datos { text-align: right; font-size: 9px; color: #555; }
-            .header-datos strong { color: #1a1a1a; }
-            .reporte-titulo { text-align: center; margin: 15px 0; }
-            .reporte-titulo h1 { font-size: 16px; color: #d43b00; margin: 0; }
-            .tabla { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 9px; }
-            .tabla thead th { background: #d43b00; color: white; padding: 6px 8px; text-align: left; font-weight: 600; border: 1px solid #c0392b; }
-            .tabla tbody td { padding: 5px 8px; border: 1px solid #ddd; }
-            .tabla tbody tr:nth-child(even) { background: #f9f9f9; }
-            .tabla .text-end { text-align: right; }
-            .tabla .text-center { text-align: center; }
-            .tabla .total-row { background: #fff3cd !important; font-weight: bold; }
-            .footer { text-align: center; margin-top: 15px; padding-top: 8px; border-top: 1px solid #ddd; font-size: 8px; color: #999; }
-            @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-            </style></head>
-            <body>
-            <div class="reporte-header">
-                <div class="header-logo">
-                    ${logo ? `<img src="${logo}" class="logo-img" onerror="this.style.display='none'">` : ''}
-                    <div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div>
-                </div>
-                <div class="header-datos">
-                    <div><strong>Período:</strong> ${fechaDesde} al ${fechaHasta}</div>
-                    <div><strong>Usuario:</strong> ${usuario}</div>
-                    <div><strong>Fecha:</strong> ${fecha} ${hora}</div>
-                </div>
-            </div>
-            <div class="reporte-titulo"><h1>RESUMEN DE VENTAS</h1></div>
-            <table class="tabla"><thead><tr><th>#</th><th>Tipo</th><th>RegistrosPendientes</th><th>Registros Finalizados</th><th>Total Recaudado</th></tr></thead><tbody>${filasResumen}</tbody><tfoot>
-                <tr class="total-row"><td colspan="3" style="text-align:right;">TOTALES:</td><td style="text-align:center;">${totalReg}</td><td style="text-align:right;">${totalRec}</td></tr>
-            </tfoot>
-            </table>
-            <div class="footer">Documento generado por ${empresa} - ${fecha} ${hora}</div>
-            <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
-            ventana.document.close();
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resumen de Ventas</title><style>@page{size:A4;margin:10mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',Arial,sans-serif;font-size:11px;color:#1a1a1a;padding:0;}.reporte-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #d43b00;padding-bottom:10px;margin-bottom:15px;}.header-logo{display:flex;align-items:center;gap:10px;}.logo-img{width:50px;height:50px;object-fit:contain;border-radius:8px;}.empresa-info h2{font-size:16px;color:#d43b00;margin:0;}.empresa-info p{font-size:9px;color:#666;margin:2px 0;}.header-datos{text-align:right;font-size:9px;color:#555;}.header-datos strong{color:#1a1a1a;}.reporte-titulo{text-align:center;margin:15px 0;}.reporte-titulo h1{font-size:16px;color:#d43b00;margin:0;}.tabla{width:100%;border-collapse:collapse;margin:10px 0;font-size:9px;}.tabla thead th{background:#d43b00;color:white;padding:6px 8px;text-align:left;font-weight:600;border:1px solid #c0392b;}.tabla tbody td{padding:5px 8px;border:1px solid #ddd;}.tabla tbody tr:nth-child(even){background:#f9f9f9;}.tabla .text-end{text-align:right;}.tabla .text-center{text-align:center;}.tabla .total-row{background:#fff3cd!important;font-weight:bold;}.footer{text-align:center;margin-top:15px;padding-top:8px;border-top:1px solid #ddd;font-size:8px;color:#999;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><div class="reporte-header"><div class="header-logo">${logo ? `<img src="${logo}" class="logo-img" onerror="this.style.display='none'">` : ''}<div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div></div><div class="header-datos"><div><strong>Período:</strong> ${fechaDesde} al ${fechaHasta}</div><div><strong>Usuario:</strong> ${usuario}</div><div><strong>Fecha:</strong> ${fecha} ${hora}</div></div></div><div class="reporte-titulo"><h1>RESUMEN DE VENTAS</h1></div><table class="tabla"><thead><tr><th>#</th><th>Tipo</th><th>Pendientes</th><th>Finalizados</th><th>Total</th></tr></thead><tbody>${filasResumen}</tbody><tfoot><tr class="total-row"><td colspan="3" style="text-align:right;">TOTALES:</td><td style="text-align:center;">${totalReg}</td><td style="text-align:right;">${totalRec}</td></tr></tfoot></table><div class="footer">Documento generado por ${empresa} - ${fecha} ${hora}</div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.close();
+            setTimeout(() => document.body.removeChild(iframe), 3000);
         }
 
         function exportarDetalleExcel() {
@@ -5247,8 +5171,6 @@
         }
 
         function exportarDetallePDF() {
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) return;
             const fechaDesde = document.getElementById('fechaDesde')?.value || '';
             const fechaHasta = document.getElementById('fechaHasta')?.value || '';
             const logo = configSistema.apariencia?.logo || '';
@@ -5258,8 +5180,6 @@
             const hora = new Date().toLocaleTimeString('es-BO', { hour12: false });
 
             let filas = '';
-            const totalCierresEl = document.querySelector('#tablaDetalleMovimientos tr.table-active td:last-child');
-            const totalCierres = totalCierresEl ? totalCierresEl.innerText : 'Bs. 0.00';
             document.querySelectorAll('#tablaDetalleMovimientos tr').forEach(row => {
                 const celdas = row.querySelectorAll('td');
                 if (celdas.length >= 10) {
@@ -5269,48 +5189,15 @@
                 }
             });
 
-            printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Detalle de Movimientos</title>
-            <style>
-            @page { size: A4 landscape; margin: 8mm; }
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; color: #1a1a1a; padding: 0; }
-            .reporte-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d43b00; padding-bottom: 10px; margin-bottom: 15px; }
-            .header-logo { display: flex; align-items: center; gap: 10px; }
-            .logo-img { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; }
-            .empresa-info h2 { font-size: 16px; color: #d43b00; margin: 0; }
-            .empresa-info p { font-size: 9px; color: #666; margin: 2px 0; }
-            .header-datos { text-align: right; font-size: 9px; color: #555; }
-            .header-datos strong { color: #1a1a1a; }
-            .reporte-titulo { text-align: center; margin: 15px 0; }
-            .reporte-titulo h1 { font-size: 16px; color: #d43b00; margin: 0; }
-            .tabla { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 8px; }
-            .tabla thead th { background: #d43b00; color: white; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #c0392b; }
-            .tabla tbody td { padding: 4px 6px; border: 1px solid #ddd; }
-            .tabla tbody tr:nth-child(even) { background: #f9f9f9; }
-            .tabla .text-end { text-align: right; }
-            .tabla .text-center { text-align: center; }
-            .tabla .total-row { background: #fff3cd !important; font-weight: bold; }
-            .footer { text-align: center; margin-top: 15px; padding-top: 8px; border-top: 1px solid #ddd; font-size: 8px; color: #999; }
-            @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-            </style></head>
-            <body>
-            <div class="reporte-header">
-                <div class="header-logo">
-                    ${logo ? `<img src="${logo}" class="logo-img" onerror="this.style.display='none'">` : ''}
-                    <div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div>
-                </div>
-                <div class="header-datos">
-                    <div><strong>Período:</strong> ${fechaDesde} al ${fechaHasta}</div>
-                    <div><strong>Usuario:</strong> ${usuario}</div>
-                    <div><strong>Fecha:</strong> ${fecha} ${hora}</div>
-                </div>
-            </div>
-            <div class="reporte-titulo"><h1>DETALLE DE MOVIMIENTOS</h1></div>
-            <table class="tabla"><thead><tr><th>#</th><th>Registro F/H</th><th>Retiro F/H</th><th>Usuario</th><th>Tipo</th><th>Concepto</th><th>Observaciones</th><th>Num.REG</th><th>Método</th><th>Monto</th></tr></thead><tbody>${filas}</tbody></table>
-            <tfoot><tr class="total-row"><td colspan="9" style="text-align:right;font-weight:bold;">TOTAL CIERRES DEL PERÍODO:</td><td style="text-align:right;font-weight:bold;">${totalCierres}</td></tr></tfoot>
-            <div class="footer">Documento generado por ${empresa} - ${fecha} ${hora}</div>
-            <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
-            printWindow.document.close();
+            const totalCierresEl = document.querySelector('#tablaDetalleMovimientos tr.table-active td:last-child');
+            const totalCierres = totalCierresEl ? totalCierresEl.innerText : 'Bs. 0.00';
+
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Detalle de Movimientos</title><style>@page{size:A4 landscape;margin:8mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',Arial,sans-serif;font-size:10px;color:#1a1a1a;padding:0;}.reporte-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #d43b00;padding-bottom:10px;margin-bottom:15px;}.header-logo{display:flex;align-items:center;gap:10px;}.logo-img{width:50px;height:50px;object-fit:contain;border-radius:8px;}.empresa-info h2{font-size:16px;color:#d43b00;margin:0;}.empresa-info p{font-size:9px;color:#666;margin:2px 0;}.header-datos{text-align:right;font-size:9px;color:#555;}.header-datos strong{color:#1a1a1a;}.reporte-titulo{text-align:center;margin:15px 0;}.reporte-titulo h1{font-size:16px;color:#d43b00;margin:0;}.tabla{width:100%;border-collapse:collapse;margin:10px 0;font-size:8px;}.tabla thead th{background:#d43b00;color:white;padding:5px 6px;text-align:left;font-weight:600;border:1px solid #c0392b;}.tabla tbody td{padding:4px 6px;border:1px solid #ddd;}.tabla tbody tr:nth-child(even){background:#f9f9f9;}.tabla .text-end{text-align:right;}.tabla .text-center{text-align:center;}.tabla .total-row{background:#fff3cd!important;font-weight:bold;}.footer{text-align:center;margin-top:15px;padding-top:8px;border-top:1px solid #ddd;font-size:8px;color:#999;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><div class="reporte-header"><div class="header-logo">${logo ? `<img src="${logo}" class="logo-img" onerror="this.style.display='none'">` : ''}<div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div></div><div class="header-datos"><div><strong>Período:</strong> ${fechaDesde} al ${fechaHasta}</div><div><strong>Usuario:</strong> ${usuario}</div><div><strong>Fecha:</strong> ${fecha} ${hora}</div></div></div><div class="reporte-titulo"><h1>DETALLE DE MOVIMIENTOS</h1></div><table class="tabla"><thead><tr><th>#</th><th>Registro F/H</th><th>Retiro F/H</th><th>Usuario</th><th>Tipo</th><th>Concepto</th><th>Observaciones</th><th>Num.REG</th><th>Método</th><th>Monto</th></tr></thead><tbody>${filas}</tbody><tfoot><tr class="total-row"><td colspan="9" style="text-align:right;font-weight:bold;">TOTAL CIERRES DEL PERÍODO:</td><td style="text-align:right;font-weight:bold;">${totalCierres}</td></tr></tfoot></table><div class="footer">Documento generado por ${empresa} - ${fecha} ${hora}</div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.close();
+            setTimeout(() => document.body.removeChild(iframe), 3000);
         }
 
 
@@ -5468,8 +5355,6 @@
         }
 
         function exportarHistorialPDF() {
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) return;
             const logo = configSistema.apariencia?.logo || '';
             const empresa = configSistema.establecimiento?.nombre || 'Guarda Equipajes';
             const fecha = new Date().toLocaleDateString();
@@ -5480,44 +5365,17 @@
                 const celdas = row.querySelectorAll('td');
                 if (celdas.length >= 8) {
                     filas += '<tr>';
-                    celdas.forEach(td => filas += `<td>${td.innerText}</td>`);
+                    for (let i = 0; i < 8; i++) filas += `<td>${celdas[i]?.innerText || ''}</td>`;
                     filas += '</tr>';
                 }
             });
 
-            printWindow.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Historial</title>
-            <style>
-            @page { size: A4 portrait; margin: 8mm; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; color: #1a1a1a; }
-        .reporte-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d43b00; padding-bottom: 8px; margin-bottom: 10px; }
-        .header-logo { display: flex; align-items: center; gap: 8px; }
-        .logo-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
-        .empresa-info h2 { font-size: 14px; color: #d43b00; margin: 0; }
-        .empresa-info p { font-size: 8px; color: #666; }
-        .header-datos { text-align: right; font-size: 8px; color: #555; }
-        .reporte-titulo { text-align: center; margin: 10px 0; }
-        .reporte-titulo h1 { font-size: 14px; color: #d43b00; }
-        .tabla { width: 100%; border-collapse: collapse; font-size: 7px; }
-        .tabla thead th { background: #d43b00; color: white; padding: 2px 3px; border: 1px solid #c0392b; }
-        .tabla tbody td { padding: 2px 3px; border: 1px solid #ddd; }
-        .tabla tbody tr:nth-child(even) { background: #f9f9f9; }
-        .footer { text-align: center; margin-top: 10px; font-size: 7px; color: #999; border-top: 1px solid #ddd; padding-top: 5px; }
-        @media print { body { -webkit-print-color-adjust: exact; } }
-            </style></head>
-            <body>
-        <div class="reporte-header">
-            <div class="header-logo">
-                ${logo ? `<img src="${logo}" class="logo-img">` : ''}
-                <div class="empresa-info"><h2>${empresa}</h2><p>Historial Completo</p></div>
-            </div>
-            <div class="header-datos"><strong>Fecha:</strong> ${fecha} ${hora}</div>
-        </div>
-            <div class="reporte-titulo"><h1>HISTORIAL COMPLETO</h1></div>
-            <table class="tabla"><thead><tr><th>N° Reg</th><th>Cliente</th><th>ID</th><th>Locker</th><th>Fecha</th><th>Retiro</th><th>Monto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table>
-            <div class="footer">${empresa} - ${fecha}</div>
-            <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};<\/script></body></html>`);
-            printWindow.document.close();
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Historial</title><style>@page{size:A4 landscape;margin:8mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',Arial,sans-serif;font-size:9px;color:#1a1a1a;}.reporte-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #d43b00;padding-bottom:8px;margin-bottom:10px;}.header-logo{display:flex;align-items:center;gap:8px;}.logo-img{width:40px;height:40px;object-fit:contain;border-radius:6px;}.empresa-info h2{font-size:14px;color:#d43b00;margin:0;}.empresa-info p{font-size:8px;color:#666;}.header-datos{text-align:right;font-size:8px;color:#555;}.reporte-titulo{text-align:center;margin:10px 0;}.reporte-titulo h1{font-size:14px;color:#d43b00;}.tabla{width:100%;border-collapse:collapse;font-size:8px;}.tabla thead th{background:#d43b00;color:white;padding:4px 5px;border:1px solid #c0392b;}.tabla tbody td{padding:3px 5px;border:1px solid #ddd;}.tabla tbody tr:nth-child(even){background:#f9f9f9;}.footer{text-align:center;margin-top:10px;font-size:7px;color:#999;border-top:1px solid #ddd;padding-top:5px;}@media print{body{-webkit-print-color-adjust:exact;}}</style></head><body><div class="reporte-header"><div class="header-logo">${logo ? `<img src="${logo}" class="logo-img">` : ''}<div class="empresa-info"><h2>${empresa}</h2><p>Sistema de Lockers</p></div></div><div class="header-datos"><strong>Fecha:</strong> ${fecha} ${hora}</div></div><div class="reporte-titulo"><h1>HISTORIAL COMPLETO</h1></div><table class="tabla"><thead><tr><th>N° Reg</th><th>Cliente</th><th>ID</th><th>Locker</th><th>Fecha</th><th>Retiro</th><th>Monto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table><div class="footer">${empresa} - ${fecha}</div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.close();
+            setTimeout(() => document.body.removeChild(iframe), 3000);
         }
         
 
