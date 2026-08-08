@@ -3554,7 +3554,8 @@
                 return;
             }
             const encontrado = registros.find(r => r.estado === 'activo' &&
-                r.codigo_equipaje.toUpperCase().includes(busqueda));
+                (r.numero_registro.toUpperCase().includes(busqueda) ||
+                    r.codigo_equipaje.toUpperCase().includes(busqueda)));
             if (encontrado) {
                 registroEncontrado = encontrado;
                 resultadoDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>✅ Registro encontrado</div>';
