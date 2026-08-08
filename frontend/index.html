@@ -2253,8 +2253,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <i class="fas fa-search"></i>
-                        <input type="text" class="form-control" id="buscarRegistro"
-                            placeholder="Buscar por número de registro o código de equipaje...">
+                        <input type="text" class="form-control" id="buscarRegistro" placeholder="Buscar por código de equipaje...">
                     </div>
                     <div id="resultadoBusqueda"></div>
                     <div id="detalleRegistro" style="display:none;" class="alert alert-info">
@@ -3515,7 +3514,9 @@
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-            iframe.contentDocument.write(`<html><head><title>Ticket - ${registro.numero_registro}</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3>${direccion ? `<p>${direccion}</p>` : ''}${telefono ? `<p>Tel: ${telefono}</p>` : ''}</div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${registro.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${registro.codigo_equipaje}</p><p><span class="bold">FECHA:</span> ${registro.fecha}</p><p><span class="bold">HORA:</span> ${registro.hora || ''}</p><p><span class="bold">LOCKER:</span> ${registro.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${registro.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${registro.cliente_identificacion}</p>${registro.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${registro.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">Presente este ticket para retirar su equipaje</p></div><div class="line"></div><div class="center"><p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.write(`<html><head><title>Ticket - ${registro.numero_registro}</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3>${direccion ? `<p>${direccion}</p>` : ''}${telefono ? `<p>Tel: ${telefono}</p>` : ''}</div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${registro.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${registro.codigo_equipaje}</p><p><span class="bold">FECHA:</span> ${registro.fecha}</p><p><span class="bold">HORA:</span> ${registro.hora || ''}</p><p><span class="bold">LOCKER:</span> ${registro.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${registro.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${registro.cliente_identificacion}</p>${registro.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${registro.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">Presente este ticket para retirar su equipaje</p></div><div class="line"></div><div class="center">${configSistema.establecimiento?.horario ? `<p><span class="bold">Horario:</span> ${configSistema.establecimiento.horario}</p>` : ''}
+            ${configSistema.establecimiento?.servicios ? `<p><span class="bold">Servicios:</span> ${configSistema.establecimiento.servicios}</p>` : ''}
+            <p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
             iframe.contentDocument.close();
             setTimeout(() => document.body.removeChild(iframe), 2000);
         }
@@ -3546,14 +3547,14 @@
             const busqueda = document.getElementById('buscarRegistro').value.trim().toUpperCase();
             const resultadoDiv = document.getElementById('resultadoBusqueda');
             const accionesDiv = document.getElementById('accionesRetiro');
-            if (busqueda.length < 3) {
-                resultadoDiv.innerHTML = '<div class="text-muted text-center">🔍 Ingrese al menos 3 caracteres</div>';
+            if (busqueda.length < 9) {
+                resultadoDiv.innerHTML = '<div class="text-muted text-center">🔍 Ingrese los 9 caracteres</div>';
                 document.getElementById('detalleRegistro').style.display = 'none';
                 if (accionesDiv) accionesDiv.style.display = 'none';
                 return;
             }
             const encontrado = registros.find(r => r.estado === 'activo' &&
-                (r.numero_registro.toUpperCase().includes(busqueda) || r.codigo_equipaje.toUpperCase().includes(busqueda)));
+                r.codigo_equipaje.toUpperCase().includes(busqueda));
             if (encontrado) {
                 registroEncontrado = encontrado;
                 resultadoDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>✅ Registro encontrado</div>';
@@ -3705,7 +3706,9 @@
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-            iframe.contentDocument.write(`<html><head><title>Comprobante Retiro</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}h4{margin:5px 0;font-size:13px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3><h4>COMPROBANTE DE RETIRO</h4></div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${r.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${r.codigo_equipaje}</p><p><span class="bold">FECHA INGRESO:</span> ${r.fecha} ${r.hora || ''}</p><p><span class="bold">FECHA RETIRO:</span> ${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString('es-BO', { hour12: false })}</p><p><span class="bold">LOCKER:</span> ${r.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${r.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${r.cliente_identificacion}</p>${r.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${r.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">TOTAL PAGADO: Bs. ${r.monto.toFixed(2)}</p><p class="bold">MÉTODO: ${m ? m.toUpperCase() : 'PENDIENTE'}</p></div><div class="line"></div><div class="center"><p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
+            iframe.contentDocument.write(`<html><head><title>Comprobante Retiro</title><style>@page{margin:5mm;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Courier New',monospace;width:300px;margin:0 auto;padding:10px;font-size:11px;}.center{text-align:center;}.line{border-top:1px dashed #000;margin:8px 0;}.bold{font-weight:bold;}.logo{max-width:80px;max-height:80px;margin:0 auto;display:block;}h3{margin:5px 0;font-size:14px;}h4{margin:5px 0;font-size:13px;}p{margin:2px 0;}</style></head><body><div class="center">${logo ? `<img src="${logo}" class="logo" onerror="this.style.display='none'">` : ''}<h3>${empresa}</h3><h4>COMPROBANTE DE RETIRO</h4></div><div class="line"></div><p><span class="bold">N° REGISTRO:</span> ${r.numero_registro}</p><p><span class="bold">CÓDIGO:</span> ${r.codigo_equipaje}</p><p><span class="bold">FECHA INGRESO:</span> ${r.fecha} ${r.hora || ''}</p><p><span class="bold">FECHA RETIRO:</span> ${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString('es-BO', { hour12: false })}</p><p><span class="bold">LOCKER:</span> ${r.locker_codigo}</p><p><span class="bold">CLIENTE:</span> ${r.cliente_nombre}</p><p><span class="bold">IDENTIFICACIÓN:</span> ${r.cliente_identificacion}</p>${r.descripcion_equipaje ? `<p><span class="bold">DESCRIPCIÓN:</span> ${r.descripcion_equipaje}</p>` : ''}<div class="line"></div><div class="center"><p class="bold">TOTAL PAGADO: Bs. ${r.monto.toFixed(2)}</p><p class="bold">MÉTODO: ${m ? m.toUpperCase() : 'PENDIENTE'}</p></div><div class="line"></div><div class="center">${configSistema.establecimiento?.horario ? `<p><span class="bold">Horario:</span> ${configSistema.establecimiento.horario}</p>` : ''}
+            ${configSistema.establecimiento?.servicios ? `<p><span class="bold">Servicios:</span> ${configSistema.establecimiento.servicios}</p>` : ''}
+            <p>¡Gracias por confiar en nosotros!</p><p>${ahora.toLocaleString()}</p></div><script>window.print();<\/script></body></html>`);
             iframe.contentDocument.close();
             setTimeout(() => document.body.removeChild(iframe), 2000);
         }
