@@ -4762,7 +4762,7 @@
                 <div class="p-4"><div class="caja-card"><div class="d-flex justify-content-between align-items-center mb-3"><h5><i class="fas fa-chart-simple me-2"></i>Resumen de Ventas</h5><button class="btn btn-sm btn-danger" onclick="exportarResumenVentasPDF()"><i class="fas fa-file-pdf me-1"></i> PDF</button></div>
                 <div class="table-responsive"><table class="table table-bordered"><thead class="table-light"><tr><th>#</th><th>Tipo</th><th>Registros Pendientes</th><th>Registros Finalizados</th><th>Total Recaudado</th></tr></thead>
                 <tbody id="resumenVentasBody"><tr><td colspan="4" class="text-center">Seleccione fechas</td></tr></tbody>
-                <tfoot class="table-warning"><tr><td colspan="3" class="text-end">TOTALES:</td><td id="totalRegistrosResumen" class="text-center">0</td><td id="totalRecaudadoResumen" class="text-end">Bs. 0.00</td></tr></tfoot></table></div></div></div>
+                <tfoot class="table-warning"><tr><td colspan="3" class="text-end">TOTALES:</td><td id="totalRegistrosResumen" class="text-center">${totalFinalizados}</td><td id="totalRecaudadoResumen" class="text-end">Bs. ${totalRecaudado.toFixed(2)}</td></tr></tfoot></table></div></div></div>
                 
                 <div class="p-3 pt-0"><div class="caja-card" style="width:100%;"><div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 p-3 pb-0"><h5><i class="fas fa-table me-2"></i>Detalle de Movimientos</h5>
                 <div class="d-flex gap-2"><div class="input-group" style="width:200px;"><span class="input-group-text"><i class="fas fa-search"></i></span><input type="text" class="form-control" id="buscarEnTabla" placeholder="Buscar..."></div>
@@ -5083,7 +5083,9 @@
                 </tr>`;
             }
 
-            const totalRegistros = (resumenLockers.pequeño || 0) + (resumenLockers.mediano || 0) + (resumenLockers.grande || 0) + ingresosManuales.length + egresosManuales.length;
+            const totalPendientes = (pendientesPorTamaño.pequeño || 0) + (pendientesPorTamaño.mediano || 0) + (pendientesPorTamaño.grande || 0);
+            const totalFinalizados = (resumenLockers.pequeño || 0) + (resumenLockers.mediano || 0) + (resumenLockers.grande || 0) + ingresosManuales.length;
+            const totalRegistros = totalPendientes + totalFinalizados + egresosManuales.length;
             const totalRecaudado = (totalesLockers.pequeño || 0) + (totalesLockers.mediano || 0) + (totalesLockers.grande || 0) + totalIngresosManuales - totalEgresosManuales;
             if (document.getElementById('totalRegistrosResumen')) document.getElementById('totalRegistrosResumen').innerText = totalRegistros;
             if (document.getElementById('totalRecaudadoResumen')) document.getElementById('totalRecaudadoResumen').innerHTML = `Bs. ${totalRecaudado.toFixed(2)}`;
