@@ -5045,6 +5045,14 @@
                     if (pendientesPorTamaño[tam] !== undefined) pendientesPorTamaño[tam]++;
                 });
 
+                const totalPendientes = (pendientesPorTamaño.pequeño || 0) + (pendientesPorTamaño.mediano || 0) + (pendientesPorTamaño.grande || 0);
+                const totalFinalizados = (resumenLockers.pequeño || 0) + (resumenLockers.mediano || 0) + (resumenLockers.grande || 0) + ingresosManuales.length;
+                const totalRegistros = totalPendientes + totalFinalizados + egresosManuales.length;
+                const totalRecaudado = (totalesLockers.pequeño || 0) + (totalesLockers.mediano || 0) + (totalesLockers.grande || 0) + totalIngresosManuales - totalEgresosManuales;
+
+                if (document.getElementById('totalRegistrosResumen')) document.getElementById('totalRegistrosResumen').innerText = totalRegistros;
+                if (document.getElementById('totalRecaudadoResumen')) document.getElementById('totalRecaudadoResumen').innerHTML = `Bs. ${totalRecaudado.toFixed(2)}`;
+
                 tbodyResumen.innerHTML = `
                 <tr>
                     <td class="text-center">1</td>
@@ -5083,17 +5091,6 @@
                 </tr>`;
             }
 
-            const totalPendientes = (pendientesPorTamaño.pequeño || 0) + (pendientesPorTamaño.mediano || 0) + (pendientesPorTamaño.grande || 0);
-            const totalFinalizados = (resumenLockers.pequeño || 0) + (resumenLockers.mediano || 0) + (resumenLockers.grande || 0) + ingresosManuales.length;
-            const totalRegistros = totalPendientes + totalFinalizados + egresosManuales.length;
-            const totalRecaudado = (totalesLockers.pequeño || 0) + (totalesLockers.mediano || 0) + (totalesLockers.grande || 0) + totalIngresosManuales - totalEgresosManuales;
-
-            
-            console.log('elemento totalRegistrosResumen:', document.getElementById('totalRegistrosResumen'));
-            console.log('elemento totalRecaudadoResumen:', document.getElementById('totalRecaudadoResumen'));
-            if (document.getElementById('totalRegistrosResumen')) document.getElementById('totalRegistrosResumen').innerText = totalRegistros;
-            if (document.getElementById('totalRecaudadoResumen')) document.getElementById('totalRecaudadoResumen').innerHTML = `Bs. ${totalRecaudado.toFixed(2)}`;
-            console.log('totalRegistros:', totalRegistros, 'totalRecaudado:', totalRecaudado);
             const movimientosDetalle = [];
             aperturas.forEach(a => {
                 movimientosDetalle.push({
