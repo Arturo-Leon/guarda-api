@@ -4306,7 +4306,7 @@
                     monto: totalEsperado,
                     metodo: 'EFECTIVO',
                     fecha: new Date().toLocaleDateString(),
-                    hora: new new Date().toLocaleTimeString('es-BO', { hour12: false })
+                    hora: new Date().toLocaleTimeString('es-BO', { hour12: false })
                 });
                 await apiCall('/movimientos', {
                     method: 'POST',
